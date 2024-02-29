@@ -1,86 +1,110 @@
+let players = []
 
-let gameBoard = (function() {
+const gameboard = (function() {
+    const combos = [
+        //horizontal
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+        //vertical
+        [1, 4, 7],
+        [2, 5, 8],
+        [3, 6, 9],
+        //diagonal
+        [1, 5, 9],
+        [3, 5, 7],
+    ]
+
     const bg = 0
-    let board = [bg, bg, bg, bg, bg, bg, bg, bg, bg]
+    let board = []
 
-    const updateBoard = (player, pos) => {
-        if (player.myTurn === true) {
-            pos = pos - 1
-            if (board[pos] === bg) {
-                board[pos] = player.marker
-                changeTurn()
-            } else {
-                console.log('cannot place here')
-            }
-        } else {
-            console.log('not your turn')
-        }
-        checkWinner(player)
+    function createBoard() {
+        let arr = [bg, bg, bg, bg, bg, bg, bg, bg, bg]
+        board = arr
     }
 
-    const logBoard = () => console.log(`${board.slice(0, 3)}\n${board.slice(3, 6)}\n${board.slice(6, 9)}`)
+    function updateBoard(player, pos) {
+        let validMove = (board[pos] === bg)
+        if (validMove) {
+            board[pos] = player.marker
+            changeTurn(player)
+        } else {
+            console.log('cannot place here')
+        }
+    }
 
-    return {updateBoard, logBoard, board}
+    let logBoard = function() {
+        let display = `${board.slice(0, 3)}\n${board.slice(3, 6)}\n${board.slice(6, 9)}`
+        console.log(display)
+    } 
+
+    function checkWinner(player) {
+        for (let combo of combos) {
+            let isWinner = combo.every(index => board[index - 1] === player.marker)
+            if (isWinner) {
+                console.log('winner!')
+                resetGame()
+                return true
+            }
+        }
+    }
+
+    function changeTurn(player) {
+        let currentPlayerIndex = players.findIndex(item => item.name === player.name);
+        let nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        player.myMove = false;
+        players[nextPlayerIndex].myMove = true;
+    }
+
+    return {board, createBoard, updateBoard, logBoard, checkWinner}
+
 })()
 
 function createPlayer(name, marker) {
-
-    let myTurn = false
+    let myMove = false
 
     function makeMove(pos) {
-        gameBoard.updateBoard(this, pos)
-        gameBoard.logBoard()
-    }
-
-    return {name, marker, myTurn, makeMove}
-}
-
-
-function checkWinner(player) {
-
-    let marker = player.marker
-    for (let combo of combos) {
-        let isWinner = combo.every(index => gameBoard.board[index - 1] === marker)
-        if (isWinner) {
-            console.log(`${player.name} wins!`)
-            return true
+        if (this.myMove === true) {
+            pos = pos - 1 //board arr is 0 indexed
+            gameboard.updateBoard(this, pos)
+            gameboard.logBoard()
+            gameboard.checkWinner(this)
+        } else {
+            console.log('not your turn')
         }
     }
-    return false
-}
 
-function changeTurn() {
-
-    if (p1.myTurn) {
-        p1.myTurn = false
-        p2.myTurn = true
-    } else {
-        p1.myTurn = true
-        p2.myTurn = false
-    }    
+    return {name, marker, myMove, makeMove}
 }
 
 
-let combos = [
-    //horizontal
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-    //vertical
-    [1, 4, 7],
-    [2, 5, 8],
-    [3, 6, 9],
-    //diagonal
-    [1, 5, 9],
-    [3, 5, 7],
-]
+function resetGame() {
+    gameboard.createBoard();
+    players.forEach(player => {
+        player.myMove = false;
+    });
+    players[0].myMove = true;
+
+    gameboard.logBoard();
+}
 
 
-let p1 = createPlayer('p1', 'X')
-let p2 = createPlayer('p2', 'O')
 
-gameBoard.logBoard()
 
-p1.myTurn = true
+const p1 = createPlayer('p1', 'X')
+const p2 = createPlayer('p2', 'O')
+players.push(p1)
+players.push(p2)
 
+resetGame()
+
+
+    // p1.myMove = true
+
+
+p1.makeMove(1)
+p2.makeMove(6)
+p1.makeMove(2)
+p2.makeMove(5)
+p1.makeMove(3)
 
