@@ -68,10 +68,10 @@ function createPlayer(name, marker) {
             pos = pos - 1 //board arr is 0 indexed
             gameboard.updateBoard(this, pos)
             gameboard.logBoard()
-            gameboard.checkWinner(this)
         } else {
             console.log('not your turn')
         }
+        gameboard.checkWinner(this)
     }
 
     return {name, marker, myMove, makeMove}
@@ -84,10 +84,8 @@ function resetGame() {
         player.myMove = false;
     });
     players[0].myMove = true;
-
     gameboard.logBoard();
 }
-
 
 
 
