@@ -1,0 +1,31 @@
+
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+}
+
+img, picture, svg, video {
+    display: block;
+    max-width: 100%;
+}
+
+.board {
+    width: 500px;
+    height: 500px;
+    border: 1px solid black;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.cell {
+    border: 1px solid silver;
+}
+
+

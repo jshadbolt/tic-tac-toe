@@ -1,10 +1,11 @@
 let players = []
 
+
 const gameboard = (function() {
     const combos = [
         //horizontal
         [1, 2, 3],
-        [4, 5, 6],
+        [4, 5, 6],  
         [7, 8, 9],
         //vertical
         [1, 4, 7],
@@ -15,13 +16,8 @@ const gameboard = (function() {
         [3, 5, 7],
     ]
 
-    const bg = 0
     let board = []
-
-    function createBoard() {
-        let arr = [bg, bg, bg, bg, bg, bg, bg, bg, bg]
-        board = arr
-    }
+    let bg = '0'
 
     function updateBoard(player, pos) {
         let validMove = (board[pos] === bg)
@@ -38,27 +34,42 @@ const gameboard = (function() {
         console.log(display)
     } 
 
+    let readBoard = () => board
+
     function checkWinner(player) {
         for (let combo of combos) {
             let isWinner = combo.every(index => board[index - 1] === player.marker)
             if (isWinner) {
                 console.log('winner!')
-                resetGame()
                 return true
             }
         }
     }
 
     function changeTurn(player) {
-        let currentPlayerIndex = players.findIndex(item => item.name === player.name);
-        let nextPlayerIndex = (currentPlayerIndex + 1) % players.length;
-        player.myMove = false;
-        players[nextPlayerIndex].myMove = true;
+        let p1 = players[0]
+        let p2 = players[1]
+        switch (player) {
+            case p1:
+                p1.myMove = false
+                p2.myMove = true
+                break;
+            case p2:
+                p1.myMove = true
+                p2.myMove = false
+                break;
+        }
     }
 
-    return {board, createBoard, updateBoard, logBoard, checkWinner}
+    function newBoard() {
+        let obj = [bg, bg, bg, bg, bg, bg, bg, bg, bg]
+        board = obj
+    }
+
+    return {board, newBoard, updateBoard, logBoard, readBoard, checkWinner}
 
 })()
+
 
 function createPlayer(name, marker) {
     let myMove = false
@@ -77,32 +88,74 @@ function createPlayer(name, marker) {
     return {name, marker, myMove, makeMove}
 }
 
+function createPlayers() {
+    players = []
+    let p1 = createPlayer('p1', 'X')
+    let p2 = createPlayer('p2', 'O')
+    p1.myMove = true
 
-function resetGame() {
-    gameboard.createBoard();
-    players.forEach(player => {
-        player.myMove = false;
-    });
-    players[0].myMove = true;
+    players = [p1, p2]
+}
+
+function createGameBoard() {
+    gameboard.newBoard()
     gameboard.logBoard();
+}
+
+function newGame() {
+    createGameBoard()
+    createPlayers()
 }
 
 
 
-const p1 = createPlayer('p1', 'X')
-const p2 = createPlayer('p2', 'O')
-players.push(p1)
-players.push(p2)
+newGame()
+uiCreateBoard()
 
-resetGame()
+// players[0].makeMove(1)
+// players[1].makeMove(6)
+// players[0].makeMove(2)
+// players[1].makeMove(5)
+// players[0].makeMove(3)
 
 
-    // p1.myMove = true
+function uiCreateBoard() {
+    const gridSize = 9
+    let uiBoard = document.querySelector('.board')
+
+    for (let i = 1 ; i < gridSize + 1 ; i++) {
+        let cell = document.createElement('div')
+        cell.classList.add('cell')
+        cell.setAttribute('index', i)
+        cell.addEventListener('click', () => {
+            let currPlayer = players.find(player => player.myMove === true)
+            let index = cell.getAttribute('index')
+            currPlayer.makeMove(index)
+            uiUpdateCell(index)
+        })
+        uiBoard.appendChild(cell)
+    }
+
+}
 
 
-p1.makeMove(1)
-p2.makeMove(6)
-p1.makeMove(2)
-p2.makeMove(5)
-p1.makeMove(3)
+function uiUpdateCell(index) {
+    const target = document.querySelector(`.cell[index="${index}"]`);
+    let board = gameboard.readBoard()
+    let marker = board[index - 1]
+    if (marker !== 0) {
+        target.textContent = marker
+    } else if (marker === 0) {
+        target.textContent = 'empty'
+    }
+}
+
+function uiResetCells() {
+    let cells = document.querySelectorAll('.cell')
+    cells.forEach(cell => cell.textContent = '')
+}
+
+
+
+
 
