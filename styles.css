@@ -1,4 +1,20 @@
+:root {
+    --radius-small: 10px;
+    --radius-medium: 20px;
+    --radius-large: 50px;
 
+    --padding-small: 10px;
+    --padding-medium: 20px;
+
+    --clr-bg: #050810;
+    /* --clr-bg: white; */
+
+    --clr-gray: #5B5B5B;
+    --clr-gray-light: #7D7C7A;
+    --clr-gray-light-transparent: #7d7c7a75;
+    --clr-blue-dark: #000022;
+
+}
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -15,17 +31,106 @@ img, picture, svg, video {
     max-width: 100%;
 }
 
-.board {
+body {
+    background-color: var(--clr-bg);
+    font-family: helvetica;
+    font-weight: lighter;
+}
+
+.board-section {
+    margin-top: 5%;
+}
+
+.board-container {
+    margin: auto;
+    /* border: 2px solid white; */
     width: 500px;
     height: 500px;
-    border: 1px solid black;
-    margin: auto;
+    position: relative;
+}
+
+.board-mask,
+.board {
+    width: 100%;
+    height: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    overflow: hidden;
+    position: absolute;
+    z-index: 1;
 }
+
+.board-mask {
+    border-radius: var(--radius-large);
+    background-color: #05081043;
+    box-shadow: inset -10px -10px 60px -10px var(--clr-bg),inset 10px 10px 78px -38px var(--clr-bg);
+    
+}
+
+.mask-cell {
+    border: 1px solid rgba(192, 192, 192, 0.598);
+    z-index: -1
+}
+
+.board {
+    border: 2px solid var(--clr-bg);
+    box-shadow: inset -10px -10px 70px -10px var(--clr-bg),inset 10px 10px 78px -38px var(--clr-bg);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: hidden;
+}
+
 
 .cell {
-    border: 1px solid silver;
+    /* box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
+    z-index: 1; */
+    opacity: 0.6;
+    transition: opacity 0.4s ease-in, background 300ms ease-in-out 200ms;
 }
 
+.nought,
+.cross {
+    opacity: 0.9;
+    filter: invert(0.8);
+}
+
+.nought {
+    background-image: url(./icon/circle-svgrepo-com.svg);
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.cross {
+    background-image: url(./icon/multiply-svgrepo-com.svg);
+    background-size: 60%;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+
+/* choose your own palyer symbol? */
+/* light up winning cells? */
+
+.nought::after,
+.cross::after {
+}
+
+.restart-modal {
+    z-index: 2;
+    background-color: var(--clr-gray);
+    border-radius: var(--radius-medium);
+    width: 50vw;
+    height: 30vh;
+    position: absolute;
+    top: 0;
+}
+
+.restart {
+    border: none;
+    background: var(--clr-gray-light);
+    border-radius: var(--radius-small);
+    font-size: 1rem;
+    padding: var(--padding-small);
+}
 

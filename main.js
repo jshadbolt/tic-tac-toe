@@ -41,23 +41,14 @@ const gameboard = (function() {
             let isWinner = combo.every(index => board[index - 1] === player.marker)
             if (isWinner) {
                 console.log('winner!')
+                gameEnd()
+                uiGameEnd(player)
                 return true
+            } else if (checkTie()) {
+                console.log('tie!!')
+                gameEnd()
+                uiGameEnd(player, 'tie')
             }
-        }
-    }
-
-    function changeTurn(player) {
-        let p1 = players[0]
-        let p2 = players[1]
-        switch (player) {
-            case p1:
-                p1.myMove = false
-                p2.myMove = true
-                break;
-            case p2:
-                p1.myMove = true
-                p2.myMove = false
-                break;
         }
     }
 
@@ -70,9 +61,29 @@ const gameboard = (function() {
 
 })()
 
+function changeTurn(player) {
+    let p1 = players[0]
+    let p2 = players[1]
+    switch (player) {
+        case p1:
+            p1.myMove = false
+            p2.myMove = true
+            break;
+        case p2:
+            p1.myMove = true
+            p2.myMove = false
+            break;
+    }
+}
+
+function checkTie() {
+    let stateOfBoard = gameboard.readBoard()
+    return !stateOfBoard.includes('0')
+}
 
 function createPlayer(name, marker) {
     let myMove = false
+    let isWinner = false
 
     function makeMove(pos) {
         if (this.myMove === true) {
@@ -107,17 +118,10 @@ function newGame() {
     createPlayers()
 }
 
-
-
-newGame()
-uiCreateBoard()
-
-// players[0].makeMove(1)
-// players[1].makeMove(6)
-// players[0].makeMove(2)
-// players[1].makeMove(5)
-// players[0].makeMove(3)
-
+function gameEnd() {
+    players[0].myMove = false
+    players[1].myMove = false
+}
 
 function uiCreateBoard() {
     const gridSize = 9
@@ -144,9 +148,10 @@ function uiUpdateCell(index) {
     let board = gameboard.readBoard()
     let marker = board[index - 1]
     if (marker !== 0) {
-        target.textContent = marker
+        let className = marker === 'X' ? 'cross' : 'nought'
+        target.classList.add(className)
     } else if (marker === 0) {
-        target.textContent = 'empty'
+        target.classList.add('empty')
     }
 }
 
@@ -155,7 +160,47 @@ function uiResetCells() {
     cells.forEach(cell => cell.textContent = '')
 }
 
+function uiGameEnd(player, tied) {
+
+    let msg = tied ? `Draw` : `${player.name} Wins!` 
+
+    const modal = document.querySelector('#restart-modal')
+    const resultBanner = modal.querySelector('.result-banner')
+    const restartBtn = modal.querySelector('.restart')
+    resultBanner.textContent = msg
+    restartBtn.addEventListener('click', () => {
+        console.log('clicked')
+        newGame()
+        uiNewGame() //remove noughts and crosses
+        modal.close()
+    })
+    modal.showModal()
+}
+
+function uiNewGame() {
+    let cells = document.querySelectorAll('.cell')
+    for (let cell of cells) {
+        cell.classList.remove('nought')
+        cell.classList.remove('cross')
+    }
+}
+
+function uiInit() {
+    uiCreateBoard()
+}
+
+
+function capitalise(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1, str.length)
+}
+
+newGame()
+uiInit() //make initial grid
 
 
 
-
+// players[0].makeMove(1)
+// players[1].makeMove(6)
+// players[0].makeMove(2)
+// players[1].makeMove(5)
+// players[0].makeMove(3)
