@@ -4,7 +4,10 @@
     --radius-large: 50px;
 
     --padding-small: 10px;
-    --padding-medium: 20px;
+    --padding-medium: 30px;
+    --padding-display: 100px;
+
+    --font-size-display: 5rem;
 
     --clr-bg: #050810;
     /* --clr-bg: white; */
@@ -31,10 +34,16 @@ img, picture, svg, video {
     max-width: 100%;
 }
 
+body, html {
+    min-height: 100%;
+}
+
 body {
-    background-color: var(--clr-bg);
+    /* background-color: var(--clr-bg); */
+    /* background: rgb(46,25,39); */
+    background: linear-gradient(0deg, rgb(17, 18, 23) 0%, rgba(5,8,16,1) 10%);
     font-family: helvetica;
-    font-weight: lighter;
+    font-weight: 100;
 }
 
 .board-section {
@@ -74,6 +83,7 @@ body {
 
 .board {
     border: 2px solid var(--clr-bg);
+    /* border-radius: var(--radius-small); */
     box-shadow: inset -10px -10px 70px -10px var(--clr-bg),inset 10px 10px 78px -38px var(--clr-bg);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -82,55 +92,84 @@ body {
 
 
 .cell {
-    /* box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
-    z-index: 1; */
-    opacity: 0.6;
-    transition: opacity 0.4s ease-in, background 300ms ease-in-out 200ms;
+
+    opacity: 0.7;
+    background-size: 60%;
+    background-position: center center;
+
+    transition: 
+        opacity 0.5s ease-in, 
+        /* background-position 200ms ease-in 50ms; */
+        background-size 100ms ease-in,
+        box-shadow 0.5s ease-out
+
 }
 
 .nought,
 .cross {
-    opacity: 0.9;
+    opacity: 0.85;
     filter: invert(0.8);
+    z-index: 1; 
 }
 
 .nought {
+    /* box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset; */
     background-image: url(./icon/circle-svgrepo-com.svg);
-    background-size: 70%;
+    background-size: 73%;
     background-repeat: no-repeat;
     background-position: center center;
 }
 
 .cross {
+
     background-image: url(./icon/multiply-svgrepo-com.svg);
-    background-size: 60%;
+    background-size: 65%;
     background-repeat: no-repeat;
     background-position: center center;
 }
 
-
-/* choose your own palyer symbol? */
-/* light up winning cells? */
-
-.nought::after,
-.cross::after {
+#restart-modal {
+    width: 100vw;
+    height: 100vh;
+    background-color: transparent;
+    border: none;
+    /* position: absolute; */
+    margin: auto;
+    color: white;
+    text-align: center;
+    transition: all 1s ease-in-out;
+    backdrop-filter: blur(2px);
 }
 
-.restart-modal {
-    z-index: 2;
-    background-color: var(--clr-gray);
-    border-radius: var(--radius-medium);
-    width: 50vw;
-    height: 30vh;
-    position: absolute;
-    top: 0;
+.result-banner {
+    font-size: var(--font-size-display);
+    padding: var(--padding-display);
 }
 
 .restart {
     border: none;
     background: var(--clr-gray-light);
     border-radius: var(--radius-small);
-    font-size: 1rem;
-    padding: var(--padding-small);
+    padding: 5px var(--padding-small);
 }
 
+/* PSEUDOS */
+
+#restart-modal *:focus,
+#restart-modal:focus {
+    appearance: none;
+    outline: none;
+}
+
+.hide {
+    opacity: 0;
+}
+
+
+/* NOTES */
+
+/* choose your own palyer symbol? */
+/* light up winning cells? !!*
+//fade out board on new game
+//nice effect wouldb e two have two adjacent of the saem symbol share the same box shadow border 'to symbolise' matching
+//enter player name

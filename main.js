@@ -150,6 +150,8 @@ function uiUpdateCell(index) {
     if (marker !== 0) {
         let className = marker === 'X' ? 'cross' : 'nought'
         target.classList.add(className)
+        applyShadow(target)
+        console.log(target)
     } else if (marker === 0) {
         target.classList.add('empty')
     }
@@ -161,28 +163,59 @@ function uiResetCells() {
 }
 
 function uiGameEnd(player, tied) {
+    // const board = document.querySelector('.board')
+    // board.classList.add('hide')
 
-    let msg = tied ? `Draw` : `${player.name} Wins!` 
+    let msg = tied ? `Draw` : `${capitalise(player.name)} Wins` 
 
     const modal = document.querySelector('#restart-modal')
+    modal.style.opacity= 0; 
+
+
     const resultBanner = modal.querySelector('.result-banner')
-    const restartBtn = modal.querySelector('.restart')
     resultBanner.textContent = msg
-    restartBtn.addEventListener('click', () => {
-        console.log('clicked')
+
+    modalFadeIn(modal)
+
+    setTimeout(() => {
+        startNewRound()
+        modalFadeOut(modal)
+    }, 3000)
+}
+
+function startNewRound() {
         newGame()
-        uiNewGame() //remove noughts and crosses
-        modal.close()
-    })
+        uiNewGame()  //remove noughts and crosses
+}
+
+function modalFadeIn(modal) {
+    modal.style.transition='opacity 2s'; //handle transitions
+
     modal.showModal()
+    modal.style.opacity= 1;
+}
+
+function modalFadeOut(modal) {
+    modal.style.transition='opacity 1s ease-in'; //handle transitions
+
+    modal.style.opacity = 0;
+    setTimeout(() => {
+        modal.close();
+    }, 1000);
 }
 
 function uiNewGame() {
     let cells = document.querySelectorAll('.cell')
     for (let cell of cells) {
-        cell.classList.remove('nought')
-        cell.classList.remove('cross')
+        setTimeout(() => {
+            rmNoughtCross(cell)
+        }, 1000)
     }
+}
+
+function rmNoughtCross(el) {
+    el.classList.remove('nought')
+    el.classList.remove('cross')
 }
 
 function uiInit() {
@@ -194,9 +227,34 @@ function capitalise(str) {
     return str.charAt(0).toUpperCase() + str.slice(1, str.length)
 }
 
+function applyShadow(el) {
+
+    let one = `box-shadow:rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;`
+
+    let two = `box-shadow:rgba(0, 0, 0, 0.35) 0px 50px 36px -28px inset;`
+
+    let three = `box-shadow:rgba(0, 0, 0, 0.35) -50px 0px 36px -28px inset;`
+
+    let four = `box-shadow:rgba(0, 0, 0, 0.35) 50px 0px 36px -28px inset;`
+
+    let shadows = [one, two, three, four]
+
+    let num = getRandomIntInclusive(0, 3)
+
+    el.style.cssText = shadows[num]
+    console.log(shadows[num])
+}
+
+function getRandomIntInclusive(min, max) {
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
+}
+
 newGame()
 uiInit() //make initial grid
 
+// uiGameEnd(players[0])
 
 
 // players[0].makeMove(1)
