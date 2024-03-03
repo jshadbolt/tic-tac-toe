@@ -1,4 +1,5 @@
 let players = []
+let names = []
 
 
 const gameboard = (function() {
@@ -42,14 +43,15 @@ const gameboard = (function() {
             if (isWinner) {
                 console.log('winner!')
                 player.givePoint()
-                updateScoreDisplay(players[0].getPoint(), players[1].getPoint())
                 gameEnd()
                 uiGameEnd(player)
+                updateScoreDisplay(players[0].getScore(), players[1].getScore())
                 return true
             } else if (checkTie()) {
                 console.log('tie!!')
                 gameEnd()
                 uiGameEnd(player, 'tie')
+                updateScoreDisplay(players[0].getScore(), players[1].getScore())
             }
         }
     }
@@ -94,7 +96,7 @@ function createPlayer(name, marker) {
         score++
     }
 
-    let getPoint = () => score
+    let getScore = () => score
 
     function makeMove(pos) {
         if (this.myMove === true) {
@@ -107,16 +109,16 @@ function createPlayer(name, marker) {
         gameboard.checkWinner(this)
     }
 
-    return {name, marker, myMove, makeMove, getPoint, givePoint}
+    return {name, marker, myMove, makeMove, getScore, givePoint}
 }
 
 function createPlayers(first, second) {
-    players = []
     let p1 = createPlayer(first, 'X')
     let p2 = createPlayer(second, 'O')
     p1.myMove = true
 
-    players = [p1, p2]
+    players.push(p1)
+    players.push(p2)
 }
 
 function createGameBoard() {
@@ -124,9 +126,9 @@ function createGameBoard() {
     gameboard.logBoard();
 }
 
-function initGame(...players) { //differentiate init vs startingn new game with same players
+function initGame(p1, p2) { //differentiate init vs startingn new game with same players
     createGameBoard()
-    createPlayers(players)
+    createPlayers(p1, p2)
 }
 
 function newGame() {
@@ -184,7 +186,7 @@ function uiGameEnd(player, tied) {
     // const board = document.querySelector('.board')
     // board.classList.add('hide')
 
-    let msg = tied ? `Draw` : `${capitalise(player.name)} Wins` 
+    let msg = tied ? `Draw` : `${player.name} Wins` 
 
     const modal = document.querySelector('#restart-modal')
     modal.style.opacity= 0; 
@@ -225,13 +227,22 @@ function modalFadeOut(modal) {
 }
 
 function uiNewGame() {
+
+
+
     let cells = document.querySelectorAll('.cell')
+    let i = 100
     for (let cell of cells) {
         setTimeout(() => {
             rmNoughtCross(cell)
-        }, 1000)
+
+
+            i += 100
+        }, i)
     }
 }
+
+
 
 function uiStartScreen() {
 
@@ -242,15 +253,12 @@ function uiStartScreen() {
     const p2Dialog = document.querySelector('#p2-dialog')
     const p2Input = document.querySelector('#p2-input')
 
-    let players = []
-
-
     p1Dialog.showModal()
 
     p1Dialog.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            let value = p1Input.value;
-            players.push(value)
+            let p1Name = p1Input.value;
+            names.push(p1Name)
 
             p1Dialog.close()
             p2Dialog.showModal()
@@ -259,21 +267,21 @@ function uiStartScreen() {
 
     p2Dialog.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            let value = p2Input.value;
-            players.push(value)
+            let p2Name = p2Input.value;
+            names.push(p2Name)
 
             p2Dialog.close()
-            initGame(players[0], players[1])
-            initPlayerCards(players)
+            initGame(names[0], names[1])
+            initPlayerCards(names)
         }
     })
 }
 
-function initPlayerCards(players) {
+function initPlayerCards(pnames) {
     const p1NameCard = document.querySelector('#p1-name')
     const p2NameCard = document.querySelector('#p2-name')
-    p1NameCard.textContent = players[0]
-    p2NameCard.textContent = players[1]
+    p1NameCard.textContent = pnames[0]
+    p2NameCard.textContent = pnames[1]
 
     const p1ScoreCard = document.querySelector('#p1-score')
     const p2ScoreCard = document.querySelector('#p2-score')
@@ -298,16 +306,16 @@ function tally(num) {
             mark = '.'
             break;
         case 1:
-            mark = '|'
+            mark = '𝍠'
             break;
         case 2:
-            mark = '||'
+            mark = '𝍠𝍠'
             break;
         case 3:
-            mark = '|||'
+            mark = '𝍠𝍠𝍠'
             break;
         case 4:
-            mark = '||||'
+            mark = '𝍠𝍠𝍠𝍠'
             break;
         case 5:
             mark = '卌'
@@ -324,6 +332,10 @@ function uiInit() {
 function rmNoughtCross(el) {
     el.classList.remove('nought')
     el.classList.remove('cross')
+}
+
+function rmCellStyles(el) {
+    el.style.remove = `box-shadow: none;`
 }
 
 function capitalise(str) {
@@ -355,7 +367,7 @@ function getRandomIntInclusive(min, max) {
 }
 
 
-initGame()
+// initGame()
 uiInit()
 
 //set focus on name input

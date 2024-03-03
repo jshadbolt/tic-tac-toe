@@ -62,7 +62,11 @@ body {
 .player-card {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
+}
+
+.score-card {
+    letter-spacing: .2rem;
 }
 
 .board-section {
