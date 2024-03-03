@@ -41,6 +41,8 @@ const gameboard = (function() {
             let isWinner = combo.every(index => board[index - 1] === player.marker)
             if (isWinner) {
                 console.log('winner!')
+                player.givePoint()
+                updateScoreDisplay(players[0].getPoint(), players[1].getPoint())
                 gameEnd()
                 uiGameEnd(player)
                 return true
@@ -60,6 +62,8 @@ const gameboard = (function() {
     return {board, newBoard, updateBoard, logBoard, readBoard, checkWinner}
 
 })()
+
+
 
 function changeTurn(player) {
     let p1 = players[0]
@@ -84,6 +88,13 @@ function checkTie() {
 function createPlayer(name, marker) {
     let myMove = false
     let isWinner = false
+    let score = 0
+
+    let givePoint = function() {
+        score++
+    }
+
+    let getPoint = () => score
 
     function makeMove(pos) {
         if (this.myMove === true) {
@@ -96,13 +107,13 @@ function createPlayer(name, marker) {
         gameboard.checkWinner(this)
     }
 
-    return {name, marker, myMove, makeMove}
+    return {name, marker, myMove, makeMove, getPoint, givePoint}
 }
 
-function createPlayers() {
+function createPlayers(first, second) {
     players = []
-    let p1 = createPlayer('p1', 'X')
-    let p2 = createPlayer('p2', 'O')
+    let p1 = createPlayer(first, 'X')
+    let p2 = createPlayer(second, 'O')
     p1.myMove = true
 
     players = [p1, p2]
@@ -113,9 +124,16 @@ function createGameBoard() {
     gameboard.logBoard();
 }
 
+function initGame(...players) { //differentiate init vs startingn new game with same players
+    createGameBoard()
+    createPlayers(players)
+}
+
 function newGame() {
     createGameBoard()
-    createPlayers()
+    players[0].myMove = true
+    players[1].myMove = false
+    // createPlayers()
 }
 
 function gameEnd() {
@@ -183,6 +201,8 @@ function uiGameEnd(player, tied) {
     }, 3000)
 }
 
+
+
 function startNewRound() {
         newGame()
         uiNewGame()  //remove noughts and crosses
@@ -213,15 +233,98 @@ function uiNewGame() {
     }
 }
 
-function rmNoughtCross(el) {
-    el.classList.remove('nought')
-    el.classList.remove('cross')
+function uiStartScreen() {
+
+    const p1Dialog = document.querySelector('#p1-dialog')
+    const p1Input = document.querySelector('#p1-input')
+
+
+    const p2Dialog = document.querySelector('#p2-dialog')
+    const p2Input = document.querySelector('#p2-input')
+
+    let players = []
+
+
+    p1Dialog.showModal()
+
+    p1Dialog.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            let value = p1Input.value;
+            players.push(value)
+
+            p1Dialog.close()
+            p2Dialog.showModal()
+        }
+    })
+
+    p2Dialog.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            let value = p2Input.value;
+            players.push(value)
+
+            p2Dialog.close()
+            initGame(players[0], players[1])
+            initPlayerCards(players)
+        }
+    })
+}
+
+function initPlayerCards(players) {
+    const p1NameCard = document.querySelector('#p1-name')
+    const p2NameCard = document.querySelector('#p2-name')
+    p1NameCard.textContent = players[0]
+    p2NameCard.textContent = players[1]
+
+    const p1ScoreCard = document.querySelector('#p1-score')
+    const p2ScoreCard = document.querySelector('#p2-score')
+    p1ScoreCard.textContent = tally(0)
+    p2ScoreCard.textContent = tally(0)
+}
+
+function updateScoreDisplay(p1Score, p2Score) {
+
+    const p1ScoreCard = document.querySelector('#p1-score')
+    const p2ScoreCard = document.querySelector('#p2-score')
+
+    p1ScoreCard.textContent = tally(p1Score)
+    p2ScoreCard.textContent = tally(p2Score)
+
+}
+
+function tally(num) {
+    let mark = ''
+    switch (num) {
+        case 0:
+            mark = '.'
+            break;
+        case 1:
+            mark = '|'
+            break;
+        case 2:
+            mark = '||'
+            break;
+        case 3:
+            mark = '|||'
+            break;
+        case 4:
+            mark = '||||'
+            break;
+        case 5:
+            mark = '卌'
+            break;
+    }
+    return mark
 }
 
 function uiInit() {
     uiCreateBoard()
+    uiStartScreen()
 }
 
+function rmNoughtCross(el) {
+    el.classList.remove('nought')
+    el.classList.remove('cross')
+}
 
 function capitalise(str) {
     return str.charAt(0).toUpperCase() + str.slice(1, str.length)
@@ -251,12 +354,11 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
 }
 
-newGame()
-uiInit() //make initial grid
 
-// uiGameEnd(players[0])
+initGame()
+uiInit()
 
-
+//set focus on name input
 // players[0].makeMove(1)
 // players[1].makeMove(6)
 // players[0].makeMove(2)
