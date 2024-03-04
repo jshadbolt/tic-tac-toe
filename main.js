@@ -45,13 +45,11 @@ const gameboard = (function() {
                 player.givePoint()
                 gameEnd()
                 uiGameEnd(player)
-                updateScoreDisplay(players[0].getScore(), players[1].getScore())
                 return true
             } else if (checkTie()) {
                 console.log('tie!!')
                 gameEnd()
                 uiGameEnd(player, 'tie')
-                updateScoreDisplay(players[0].getScore(), players[1].getScore())
             }
         }
     }
@@ -200,18 +198,23 @@ function uiGameEnd(player, tied) {
     setTimeout(() => {
         startNewRound()
         modalFadeOut(modal)
-    }, 3000)
+    }, 2000)
 }
 
 
 
 function startNewRound() {
+    uiNewGame()  //remove noughts and crosses
+    setTimeout(() => {
         newGame()
-        uiNewGame()  //remove noughts and crosses
+        updateScoreDisplay(players[0].getScore(), players[1].getScore())
+
+    }, 100)
+
 }
 
 function modalFadeIn(modal) {
-    modal.style.transition='opacity 2s'; //handle transitions
+    modal.style.transition='opacity 1s'; //handle transitions
 
     modal.showModal()
     modal.style.opacity= 1;
@@ -229,12 +232,12 @@ function modalFadeOut(modal) {
 function uiNewGame() {
     let cells = document.querySelectorAll('.cell')
     let i = 100
-    for (let cell of cells) {
-        setTimeout(() => {
+    setTimeout(() => {
+        for (let cell of cells) {
             rmNoughtCross(cell)
             rmShadow(cell)
-        }, i)
-    }
+        }
+    }, i)
 }
 
 
@@ -249,14 +252,28 @@ function uiStartScreen() {
     const p2Input = document.querySelector('#p2-input')
 
     p1Dialog.showModal()
+    p1Input.focus();
+
+    p1Dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) {
+          p1Input.focus();
+        }
+      });
+
 
     p1Dialog.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             let p1Name = p1Input.value;
             names.push(p1Name)
-
             p1Dialog.close()
             p2Dialog.showModal()
+            p2Input.focus();
+
+            p2Dialog.addEventListener('click', (event) => {
+                if (event.target === dialog) {
+                  input.focus();
+                }
+              });
         }
     })
 
@@ -265,9 +282,14 @@ function uiStartScreen() {
             let p2Name = p2Input.value;
             names.push(p2Name)
 
-            p2Dialog.close()
-            initGame(names[0], names[1])
-            initPlayerCards(names)
+            p2Dialog.style.opacity = 0
+
+            setTimeout(() => {
+                p2Dialog.close()
+                initGame(names[0], names[1])
+                initPlayerCards(names)
+            }, 300)
+
         }
     })
 }
@@ -297,7 +319,7 @@ function tally(num) {
     let mark = ''
     switch (num) {
         case 0:
-            mark = '.'
+            mark = ''
             break;
         case 1:
             mark = '𝍠'
@@ -324,13 +346,27 @@ function uiInit() {
 }
 
 function rmNoughtCross(el) {
-    el.classList.remove('nought')
-    el.classList.remove('cross')
+    el.style.cssText = `transition: opacity 1s ease-in`
+    el.style.opacity = 0
+
+    el.classList.add('fade-bg-img')
+
+    setTimeout(() => {
+        el.classList.remove('nought')
+        el.classList.remove('cross')
+        el.style.cssText = ``
+        el.style.opacity = 1
+        el.classList.remove('fade-bg-img')
+    }, 800)
+
+
 }
 
 function rmShadow(el) {
     el.style.cssText = `box-shadow: none;`
 }
+
+
 
 function capitalise(str) {
     return str.charAt(0).toUpperCase() + str.slice(1, str.length)
@@ -361,12 +397,4 @@ function getRandomIntInclusive(min, max) {
 }
 
 
-// initGame()
 uiInit()
-
-//set focus on name input
-// players[0].makeMove(1)
-// players[1].makeMove(6)
-// players[0].makeMove(2)
-// players[1].makeMove(5)
-// players[0].makeMove(3)

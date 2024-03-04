@@ -1,7 +1,5 @@
 :root {
-    --radius-small: 10px;
-    --radius-medium: 20px;
-    --radius-large: 50px;
+
 
     --padding-small: 10px;
     --padding-medium: 30px;
@@ -13,7 +11,7 @@
     --font-size-display: 5rem;
 
     --clr-bg: #050810;
-    /* --clr-bg: white; */
+
 
     --clr-gray: #5B5B5B;
     --clr-gray-light: #7D7C7A;
@@ -42,8 +40,6 @@ body, html {
 }
 
 body {
-    /* background-color: var(--clr-bg); */
-    /* background: rgb(46,25,39); */
     background: linear-gradient(0deg, rgb(17, 18, 23) 0%, rgba(5,8,16,1) 10%);
     font-family: helvetica;
     font-weight: 100;
@@ -55,7 +51,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* border: 1px solid white; */
     padding: 25px 25px;
 }
 
@@ -65,8 +60,12 @@ body {
     gap: 10px;
 }
 
+.name-card {
+
+}
+
 .score-card {
-    letter-spacing: .3rem;
+    letter-spacing: .1rem;
     font-size: 3ch;
 }
 
@@ -76,7 +75,6 @@ body {
 
 .board-container {
     margin: auto;
-    /* border: 2px solid white; */
     width: 500px;
     height: 500px;
     position: relative;
@@ -90,24 +88,22 @@ body {
     grid-template-columns: repeat(3, 1fr);
     overflow: hidden;
     position: absolute;
-    z-index: 1;
+    z-index: 4;
 }
 
 .board-mask {
-    border-radius: var(--radius-large);
-    background-color: #05081043;
     box-shadow: inset -10px -10px 60px -10px var(--clr-bg),inset 10px 10px 78px -38px var(--clr-bg);
-    
+    transition: background-color 1s ease-in-out;
+
 }
 
 .mask-cell {
     border: 1px solid rgba(192, 192, 192, 0.598);
-    z-index: -1
+    z-index: -2
 }
 
 .board {
     border: 2px solid var(--clr-bg);
-    /* border-radius: var(--radius-small); */
     box-shadow: inset -10px -10px 70px -10px var(--clr-bg),inset 10px 10px 78px -38px var(--clr-bg);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -116,33 +112,31 @@ body {
 
 
 .cell {
-
-    opacity: 0.7;
+    opacity: 0.4;
     background-size: 60%;
     background-position: center center;
 
     transition: 
-        opacity 0.5s ease-in, 
-        /* background-position 200ms ease-in 50ms; */
-        background-size 100ms ease-in,
-        box-shadow 0.5s ease-out
-
+        opacity 0.2s ease-in, 
+        box-shadow 0.3s ease-out,
+        background-image 0.2s ease-in-out
 }
 
 .nought,
 .cross {
-    opacity: 0.85;
+    opacity: 0.8;
     filter: invert(0.8);
     z-index: 1; 
 }
 
 .nought {
-    /* box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset; */
+
     background-image: url(./icon/circle-svgrepo-com.svg);
     background-size: 73%;
     background-repeat: no-repeat;
     background-position: center center;
 }
+
 
 .cross {
 
@@ -150,6 +144,10 @@ body {
     background-size: 65%;
     background-repeat: no-repeat;
     background-position: center center;
+}
+
+.fade-bg-img {
+    background-image: none;
 }
 
 dialog {
@@ -162,21 +160,26 @@ dialog {
     height: 100%;
 }
 
+
+
 #restart-modal {
     margin: auto;
-    transition: all 1s ease-in-out;
+    transition: all 0.5s ease-out;
+    backdrop-filter: none;
+
 }
 
 .result-banner {
-    font-size: var(--font-size-display);
-    padding: var(--padding-display);
+    font-size: var(--font-size-large);
+    padding: var(--padding-medium);
 }
 
 .player-dialog {
+    opacity: 1;
     padding: var(--padding-display);
-    /* background-color: rgba(0, 0, 0, 0.582); */
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.498) 68%, rgba(30, 30, 30, 0.402) 100%);
     filter: blur(0.5px);
+    transition: opacity 0.3s ease-in;
 }
 
 .player-dialog > div {
@@ -189,12 +192,7 @@ dialog {
     margin-bottom: var(--padding-display);
 }
 
-.player-input-box {
-    /* border: 1px solid white; */
-}
-
 .player-input-box > label {
-    /* border: 1px solid white; */
     font-size: var(--font-size-regular);
     display: block;
     margin-bottom: 10px;
@@ -219,6 +217,8 @@ dialog {
     right: -6ch;
 }
 
+
+
 /* PSEUDOS */
 
 dialog:modal {
@@ -239,8 +239,5 @@ dialog:focus {
 
 /* NOTES */
 
-/* choose your own palyer symbol? */
+
 /* light up winning cells? !!*
-//fade out board on new game
-//nice effect wouldb e two have two adjacent of the saem symbol share the same box shadow border 'to symbolise' matching
-//enter player name
