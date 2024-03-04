@@ -61,7 +61,7 @@ body {
 }
 
 .name-card {
-
+    color: rgb(199, 199, 199);
 }
 
 .score-card {
@@ -117,7 +117,7 @@ body {
     background-position: center center;
 
     transition: 
-        opacity 0.2s ease-in, 
+        opacity 0.4s ease-in, 
         box-shadow 0.3s ease-out,
         background-image 0.2s ease-in-out
 }
@@ -170,8 +170,9 @@ dialog {
 }
 
 .result-banner {
-    font-size: var(--font-size-large);
-    padding: var(--padding-medium);
+    font-size: var(--font-size-medium);
+    margin-top: var(--padding-medium);
+    color: rgba(255, 255, 255, 0.821);
 }
 
 .player-dialog {
@@ -236,8 +237,16 @@ dialog:focus {
     opacity: 0;
 }
 
+.name-card:hover {
+    color: rgb(222, 222, 222);
+}
+
+.cell:hover {
+    backdrop-filter: rgba(187, 187, 187, 0.097);
+}
+
 
 /* NOTES */
-
-
+/* rgba(255, 255, 255, 0.097) */
+/* rgba(187, 187, 187, 0.097) */
 /* light up winning cells? !!*

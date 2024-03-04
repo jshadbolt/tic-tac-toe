@@ -41,8 +41,8 @@ const gameboard = (function() {
         for (let combo of combos) {
             let isWinner = combo.every(index => board[index - 1] === player.marker)
             if (isWinner) {
-                console.log('winner!')
                 player.givePoint()
+                console.log('winner!')
                 gameEnd()
                 uiGameEnd(player)
                 return true
@@ -169,7 +169,6 @@ function uiUpdateCell(index) {
         let className = marker === 'X' ? 'cross' : 'nought'
         target.classList.add(className)
         applyShadow(target)
-        console.log(target)
     } else if (marker === 0) {
         target.classList.add('empty')
     }
@@ -184,7 +183,7 @@ function uiGameEnd(player, tied) {
     // const board = document.querySelector('.board')
     // board.classList.add('hide')
 
-    let msg = tied ? `Draw` : `${player.name} Wins` 
+    let msg = tied ? `Draw` : `${capitalise(player.name)} wins` 
 
     const modal = document.querySelector('#restart-modal')
     modal.style.opacity= 0; 
@@ -196,9 +195,12 @@ function uiGameEnd(player, tied) {
     modalFadeIn(modal)
 
     setTimeout(() => {
-        startNewRound()
         modalFadeOut(modal)
     }, 2000)
+
+    setTimeout(() => {
+        startNewRound()
+    }, 3000)
 }
 
 
@@ -214,14 +216,14 @@ function startNewRound() {
 }
 
 function modalFadeIn(modal) {
-    modal.style.transition='opacity 1s'; //handle transitions
+    modal.style.transition='opacity 1s ease-in'; //handle transitions
 
     modal.showModal()
     modal.style.opacity= 1;
 }
 
 function modalFadeOut(modal) {
-    modal.style.transition='opacity 1s ease-in'; //handle transitions
+    modal.style.transition='opacity 0.5s ease-in'; //handle transitions
 
     modal.style.opacity = 0;
     setTimeout(() => {
@@ -240,8 +242,6 @@ function uiNewGame() {
     }, i)
 }
 
-
-
 function uiStartScreen() {
 
     const p1Dialog = document.querySelector('#p1-dialog')
@@ -255,7 +255,7 @@ function uiStartScreen() {
     p1Input.focus();
 
     p1Dialog.addEventListener('click', (event) => {
-        if (event.target === dialog) {
+        if (event.target === p1Dialog) {
           p1Input.focus();
         }
       });
@@ -270,8 +270,8 @@ function uiStartScreen() {
             p2Input.focus();
 
             p2Dialog.addEventListener('click', (event) => {
-                if (event.target === dialog) {
-                  input.focus();
+                if (event.target === p2Dialog) {
+                  p2Input.focus();
                 }
               });
         }
@@ -289,7 +289,6 @@ function uiStartScreen() {
                 initGame(names[0], names[1])
                 initPlayerCards(names)
             }, 300)
-
         }
     })
 }
@@ -387,8 +386,8 @@ function applyShadow(el) {
     let num = getRandomIntInclusive(0, 3)
 
     el.style.cssText = shadows[num]
-    console.log(shadows[num])
 }
+
 
 function getRandomIntInclusive(min, max) {
     const minCeiled = Math.ceil(min);
