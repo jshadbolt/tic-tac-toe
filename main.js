@@ -227,17 +227,12 @@ function modalFadeOut(modal) {
 }
 
 function uiNewGame() {
-
-
-
     let cells = document.querySelectorAll('.cell')
     let i = 100
     for (let cell of cells) {
         setTimeout(() => {
             rmNoughtCross(cell)
-
-
-            i += 100
+            rmShadow(cell)
         }, i)
     }
 }
@@ -296,7 +291,6 @@ function updateScoreDisplay(p1Score, p2Score) {
 
     p1ScoreCard.textContent = tally(p1Score)
     p2ScoreCard.textContent = tally(p2Score)
-
 }
 
 function tally(num) {
@@ -334,8 +328,8 @@ function rmNoughtCross(el) {
     el.classList.remove('cross')
 }
 
-function rmCellStyles(el) {
-    el.style.remove = `box-shadow: none;`
+function rmShadow(el) {
+    el.style.cssText = `box-shadow: none;`
 }
 
 function capitalise(str) {
